@@ -8,27 +8,43 @@ class Note(BaseModel):
     content:str
 
 
-notes=[]
+notes={}
+next_id=1
 
 @app.get("/")
 def home():
     return {"message":"This is home"}
 
 
-@app.post("/notes")
+@app.post("/notes",status_code=201)
 def add_notes(note:Note):
-    notes.append(note)
-    return note
+    global next_id
+    new_id=next_id
+    notes[new_id]=note
+    next_id+=1
+    return {"id":new_id, "note":note}
+    
 
 @app.get("/notes")
-def all_notes():
-    return notes
+def list_notes(q:str | None= None ,limit:int=10):
+    result=[{"id":i,'note':n} for i ,n in notes.items()]
+    if q:
+        result=[r for r in result if q.lower() in r[note].title.lower()]
+    return result[:limit]
 
 @app.get("/notes/{note_id}")
 def get_note(note_id:int):
     if note_id < 0 or note_id >=len(notes):
         raise HTTPException(status_code=404 , detail="Detail Not found")
     return notes[note_id]
+
+@app.put("/notes/{note_id}")
+def update_note(note_id:int,note:Note):
+    if note_id not in notes:
+        raise HTTPException(status_code=404,detail="Message not found")
+    notes[note_id]=note
+    return [{"id":note_id,"note":note}]
+
 
 
 @app.delete("/notes/{note_id}")
