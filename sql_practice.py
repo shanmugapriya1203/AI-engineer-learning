@@ -50,3 +50,34 @@ run("select city, count(*) from students group by city")
 # Number of students with a score above 70 in each course.
 
 run("select course,count(*) from students where score > 70 group by course")
+
+
+#Order by ascending order
+
+run("select name, score from students order by score")
+
+#order by descending order
+
+run("select name,score from students order by score desc")
+
+#order by name
+
+run("select name from students order by name")
+
+#Limit by
+
+run("select name,score from students order by score limit 3")
+
+#limit by desc
+run("select name,score from students order by score desc limit 2")
+
+
+#distinct 
+
+run("select city from students")
+
+run("select distinct city from students")
+
+run("select distinct course from students")
+
+run("select name,score from students where city='Chennai' order by score desc")
